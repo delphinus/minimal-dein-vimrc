@@ -4,7 +4,7 @@ execute 'set runtimepath^=' . fnamemodify(s:dein_repo_dir, ':p')
 
 call dein#begin(s:dein_dir)
 call dein#add('Shougo/vimproc.vim', {'build': 'make'})
-call dein#add('leafgarland/typescript-vim')
+call dein#add('leafgarland/typescript-vim', {'merged': 0})
 call dein#add('Quramy/tsuquyomi')
 call dein#end()
 
