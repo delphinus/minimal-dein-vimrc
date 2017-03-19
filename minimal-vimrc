@@ -3,10 +3,14 @@ let s:dein_repo_dir = s:dein_dir . '/repos/github.com/Shougo/dein.vim'
 execute 'set runtimepath^=' . fnamemodify(s:dein_repo_dir, ':p')
 
 call dein#begin(s:dein_dir)
-call dein#add('vim-jp/vital.vim')
-call dein#add('thinca/vim-quickrun')
+call dein#add('Shougo/vimproc.vim', {'build': 'make'})
+call dein#add('leafgarland/typescript-vim')
+call dein#add('Quramy/tsuquyomi')
 call dein#end()
 
 if dein#check_install()
   call dein#install()
 endif
+
+filetype plugin indent on
+syntax enable
