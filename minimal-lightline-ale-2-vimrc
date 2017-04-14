@@ -1,0 +1,56 @@
+let g:lightline = {
+        \ 'active': {
+        \   'left': [ [ 'mode', 'paste' ], [ 'filepath' ], [ 'filename' ] ],
+        \   'right': [ [ 'ale', 'ale_ok' ] ],
+        \ },
+        \ 'component_function_visible_condition': {
+        \   'mode': 1,
+        \ },
+        \ 'component_expand': {
+        \   'ale': 'LightLineALE',
+        \   'ale_ok': 'LightLineALEOK',
+        \ },
+        \ 'component_type': {
+        \   'ale': 'error',
+        \   'ale_ok': 'ok',
+        \ },
+        \ }
+
+function! LightLineALE()
+  let l:ale = ale#statusline#Status()
+  if l:ale !=# 'OK'
+    return l:ale
+  endif
+  return ''
+endfunction
+
+function! LightLineALEOK()
+  let l:ale = ale#statusline#Status()
+  if l:ale ==# 'OK'
+    return l:ale
+  endif
+  return ''
+endfunction
+
+augroup LightLineOnALE
+  autocmd!
+  autocmd User ALELint call lightline#update()
+augroup END
+
+set laststatus=2
+
+let s:dein_dir = expand('/tmp/.cache/dein')
+let s:dein_repo_dir = s:dein_dir . '/repos/github.com/Shougo/dein.vim'
+execute 'set runtimepath^=' . fnamemodify(s:dein_repo_dir, ':p')
+
+call dein#begin(s:dein_dir)
+call dein#add('itchyny/lightline.vim')
+call dein#add('w0rp/ale')
+call dein#end()
+
+if dein#check_install()
+  call dein#install()
+endif
+
+filetype plugin indent on
+syntax enable

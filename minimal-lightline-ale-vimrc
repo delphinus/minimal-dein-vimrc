@@ -1,0 +1,81 @@
+let g:lightline = {
+        \ 'active': {
+        \   'left': [ [ 'mode', 'paste' ], [ 'filepath' ], [ 'filename' ] ],
+        \   'right': [ [ 'ale', 'ale_ok' ] ],
+        \ },
+        \ 'component_function_visible_condition': {
+        \   'mode': 1,
+        \ },
+        \ 'component_expand': {
+        \   'ale': 'LightLineALE',
+        \   'ale_ok': 'LightLineALEOK',
+        \ },
+        \ 'component_type': {
+        \   'ale': 'error',
+        \   'ale_ok': 'ok',
+        \ },
+        \ }
+
+function! LightLineALEOKString()
+  let l:formats = get(g:, 'ale_statusline_format', [])
+  return get(l:formats, 2, '')
+endfunction
+
+let g:LightLineALECache = {}
+
+function! LightLineALEString(mode)
+  let l:ok = LightLineALEOKString()
+  if l:ok ==# ''
+    return ''
+  endif
+  let l:buf = bufname('')
+  if get(g:LightLineALECache, l:buf, '') ==# ''
+    let g:LightLineALECache[l:buf] = ale#statusline#Status()
+  endif
+  if a:mode == 1
+    if g:LightLineALECache[l:buf] ==# l:ok
+      return g:LightLineALECache[l:buf]
+    endif
+  else
+    if g:LightLineALECache[l:buf] !=# l:ok
+      return g:LightLineALECache[l:buf]
+    endif
+  endif
+  return ''
+endfunction
+
+function! LightLineALE()
+  return LightLineALEString(0)
+endfunction
+
+function! LightLineALEOK()
+  return LightLineALEString(1)
+endfunction
+
+function! LightLineALEUpdate()
+  let g:LightLineALECache[bufname('')] = ''
+  call lightline#update()
+endfunction
+
+augroup LightLineOnALE
+  autocmd!
+  autocmd User ALELint call LightLineALEUpdate()
+augroup END
+
+set laststatus=2
+
+let s:dein_dir = expand('/tmp/.cache/dein')
+let s:dein_repo_dir = s:dein_dir . '/repos/github.com/Shougo/dein.vim'
+execute 'set runtimepath^=' . fnamemodify(s:dein_repo_dir, ':p')
+
+call dein#begin(s:dein_dir)
+call dein#add('itchyny/lightline.vim')
+call dein#add('w0rp/ale')
+call dein#end()
+
+if dein#check_install()
+  call dein#install()
+endif
+
+filetype plugin indent on
+syntax enable
